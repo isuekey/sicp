@@ -26,13 +26,13 @@
   (/ (+ (lower-bound i) (upper-bound i)) 2))
 (defun width (i)
   (/ (- (upper-bound i) (lower-bound i)) 2))
-(defun sub-interval (x y)
-  (make-interval (- (lower-bound x) (upper-bound y))
-                 (- (upper-bound x) (lower-bound y))))
 
-(defun print-interval (i)
-  (princ #\Newline)
-  (princ "(")
-  (princ (lower-bound i))
-  (princ ",")
-  (princ (upper-bound i)))
+(defun make-center-percent (c p)
+  (make-interval (- c (* c p)) (+ c (* c p))))
+(defun percent (i)
+  (cond ((= (center i) 0) 0)
+        (t (/ (width i) (center i)))))
+
+;;; 都为正数时，且p << c
+(defun mul-percent (x y)
+  (+ (percent x) (percent y)))
