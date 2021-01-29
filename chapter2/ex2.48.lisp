@@ -1,6 +1,5 @@
 
 
-
 (defun make-segment (v1 v2)
   (cons v1 v2))
 

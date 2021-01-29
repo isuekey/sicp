@@ -1,4 +1,5 @@
 
+;;; 因为不知道怎么测试，所以只能算是伪代码
 (defun make-vect (x y)
   (cons x y))
 (defun xcor-vect (v)
