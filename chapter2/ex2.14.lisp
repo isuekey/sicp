@@ -3,12 +3,10 @@
     (make-interval (+ (lower-bound x) (lower-bound y))
                    (+ (upper-bound x) (upper-bound y))))
 
-(defun div-interval (x y)
-  (if (< (* (lower-bound y) (upper-bound y)) 0)
-      (error "y interval cover 0")
-    (mul-interval x (make-interval (/ 1.0 (upper-bound y))
-                                   (/ 1.0 (lower-bound y))))))
 
+(defun div-interval (x y)
+  (mul-interval x (make-interval (/ 1.0 (upper-bound y))
+                                 (/ 1.0 (lower-bound y)))))
 
 (defun make-interval (a b)
   (if (< a b)
@@ -16,11 +14,6 @@
     (cons b a)))
 (defun lower-bound (interval) (car interval))
 (defun upper-bound (interval) (cdr interval))
-
-(defvar aa (make-interval 1 2))
-(defvar bb (make-interval 3 4))
-(defvar cc (make-interval -1 2))
-
 (defun mul-interval (x y)
   (let ((lx (lower-bound x))
         (ux (upper-bound x))
@@ -62,18 +55,45 @@
                                       (cond ((< lxuy uxly) (make-interval lxuy (* ux uy)))
                                             (t (make-interval uxly (* ux uy))))))))))))))))
 
-;;; 考虑 (mid, with)方式进行分组, with>=0
-;;; (m1, w1) (m2, w2)
-;;; l1l2: m1m2 - m1w2 - w1m2 + w1w2
-;;; l1u2: m1m2 + m1w2 - w1m2 - w1w2
-;;; u1l2: m1m2 - m1w2 + w1m2 - w1w2
-;;; u1u2: m1m2 + m1w2 + w1m2 + w1w2
-;;; 最后会有3次乘法, 2次除2的操作
-;;; 但是怎么说呢，目前有8种情况下只需要2次乘法，凑合用吧。
 
-;;; 如果考虑 1, w1/m1, w2/m2的大小，可以将m1m2>0时的乘法计算控制到2次,
-;;; m1=0, m2!=0; m1=0, m2=0; m1!=0, m2=0; 也可以将乘法控制到2次
-;;; m1m2<0时 w1/m1与-w2/m2大小，也可以将乘法计算控制到2次
-;;; 但是如果将除法运算考虑为乘以倒数的话其实都进行了4次乘法运算。
-;;; 我考虑不出来只用2次乘法运算得出结果方法，即使对细节条件不做归纳整理
-;;; 
+(defun sub-interval (x y)
+  (make-interval (- (lower-bound x) (upper-bound y))
+                 (- (upper-bound x) (lower-bound y))))
+(defun print-interval (i)
+  (princ #\Newline)
+  (princ "(")
+  (princ (lower-bound i))
+  (princ ", ")
+  (princ (upper-bound i))
+  (princ ")"))
+;;; 使用抽象证明的应该考虑c,w的方式
+
+(defvar r1 (make-interval 36 44))
+(defvar r2 (make-interval 40 60))
+
+(defun part1 (x y)
+  (div-interval (mul-interval x y)
+                (add-interval x y)))
+
+(defun part2 (x y)
+  (let ((one (make-interval 1 1)))
+    (div-interval one
+                  (add-interval (div-interval one x)
+                                (div-interval one y)))))
+
+(print-interval r1)
+(print-interval r2)
+(defvar pp1 (part1 r1 r2))
+(defvar pp2 (part2 r1 r2))
+(print-interval pp1)
+(print-interval pp2)
+        
+(defun center (i)
+  (/ (+ (lower-bound i) (upper-bound i)) 2))
+(defun width (i)
+  (/ (- (upper-bound i) (lower-bound i)) 2))
+
+(print (center pp1))
+(princ (width pp1))
+(print (center pp2))
+(princ (width pp2))
