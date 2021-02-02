@@ -1,3 +1,4 @@
 # SICP学习 #
-  * 这个是基于clisp的。scheme实在是不知道怎么在mac上安装。
+  * 终于mac上支持了scheme，我修改成scheme的了，逐步完善。
+  * 
   
