@@ -239,3 +239,94 @@
 3.419976592519082
 
 
+;; 牛顿法
+;; x -> g(x) 是可微分的函数，那么g(x)=0的一个解就是 x->f(x)的一个不动点
+;; f(x) = x - (g(x) / Dg(x)), Dg(x)是g(x)对x的导数
+;; Dg(x) = (g(x + dx) - g(x))/dx
+
+(define (deriv g)
+  (lambda (x)
+    (/ (- (g (+ x dx)) (g x)) dx)))
+(define dx 0.000001)
+(define (cube x) (* x x x))
+((deriv cube) 5)
+
+(define (close-enough? a b)
+  (< (abs (- a b)) dx))
+;;去掉了教材中 try-guess 直接递归结果
+(define (fix-point f guess)
+  (let ((next (f guess)))
+    (if (close-enough? guess next)
+        next
+        (fix-point f next))))
+;;按照教材写的话
+(define (newton-method g)
+  (define (newton-transform f)
+    (lambda (x)
+      (- x (/ (f x) ((deriv f) x)))))
+  (fix-point (newton-transform g) 1.0))
+
+(newton-method cube)
+(newton-method (lambda (x) (- (cube x) 27)))
+;;如果写到一起
+(define (newton-method g)
+  (fix-point
+   (lambda (x)
+     (- x (/ (g x) ((deriv g) x))))
+   1.0))
+(newton-method cube)
+(newton-method (lambda (x) (- (cube x) 27)))
+
+(define (sqrt x)
+  (newton-method (lambda (y) (- (* y y) x))))
+(sqrt 2)
+(sqrt 4)
+(sqrt 10)
+
+;; 抽象与第一级过程
+(define (fixed-point f guess)
+  (define (try guess)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try guess))
+(define tolerance 0.00001)
+(define (close-enough? a b)
+  (< (abs (- a b)) tolerance))
+(define (fixed-point-of-transform g transform guess)
+  (fixed-point (transform g) guess))
+(define (average-damp f)
+  (define (average a b) (/ (+ a b) 2))
+  (lambda (x) (average x (f x))))
+
+(define (sqrt x)
+  (fixed-point-of-transform
+   (lambda (y) (/ x y))
+   average-damp
+   1.0))
+(sqrt 2)
+(sqrt 4)
+(sqrt 10)
+;; newton
+(define (sqrt x)
+  (fixed-point-of-transform
+   (lambda (y) (- (* y y) x))
+   (lambda (g)
+     (lambda (y) (- y (/ (g y) ((deriv g) y)))))
+   1.0))
+(sqrt 2)
+(sqrt 4)
+(sqrt 10)
+;; guess 应该显示的使用
+;; 程序抽象的过程应该理解为语义化算法的过程，而不是理解为屏蔽细节的过程。
+;; 屏蔽细节仅仅是语义化的附属产物。
+
+;; 第一级状态（带有最小限制的元素）
+;;; 可以用变量命名
+;;; 可以提供给过程作为参数
+;;; 可以由过程作为结果返回
+;;; 可以包含在数据结构中
+;;;
+
+
