@@ -135,3 +135,107 @@
 (integral cube 0 1 0.00001)
 (integral cube 0 1 0.000001)
 
+;; lambda 与 let
+;; 在scheme里let是lambda的语法糖衣
+;; f(x,y) = x(1+xy)^2+y(1-y)+(1+xy)(1-y)
+;; 如果 a = 1+xy, b=1-y
+;; f(x,y) = x*a^2 + y*b + ab，表达就会简单很多
+;; 程序过程也有类似的需求
+;;
+;; lambda
+(define (f x y)
+  ((lambda (a b)
+          (+ (* x a a)
+             (* y b)
+             (* a b)))
+   (+ 1 (* x y))
+   (- 1 y)))
+;; let
+(define (f x y)
+  (let ((a (+ 1 (* x y)))
+        (b (- 1 y)))
+    (+ (* x a a)
+       (* y b)
+       (* a b))))
+;;
+
+;; 折半求方程的解
+
+(define (search f neg-point pos-point)
+  (let ((middle (/ (+ neg-point pos-point) 2.0)))
+    (if (close-enough? neg-point pos-point)
+        middle
+        (let ((test-value (f middle)))
+          (cond ((positive? test-value) (search f neg-point middle))
+                ((negative? test-value) (search f middle pos-point))
+                (else middle))))))
+
+(define (close-enough? a b)
+  (< (abs (- a b)) tolerance))
+(define tolerance 0.0001)
+(define (positive? a) (> a 0))
+(define (negative? a) (< a 0))
+(define (cube a) (* a a a))
+(search cube -1 2)
+
+;; 增强可用性
+(define (half-interval-search f a b)
+  (let ((a-value (f a))
+        (b-value (f b)))
+    (cond ((and (negative? a-value) (positive? b-value)) (search f a b))
+          ((and (positive? a-value) (negative? b-value)) (search f b a))
+          (else (error "给出的值的正负号需要是相反的")))))
+
+;; 函数不动点 x=f(x)就会有f(x)=f(f(x))=f(f(f(x)))...
+(define tolerance 0.0001)
+(define (fix-point f first-guess)
+  (define (try-guess guess)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try-guess next))))
+  (define (close-enough? a b)
+    (< (abs (- a b)) tolerance))
+  (try-guess first-guess))
+(fix-point cube 1)
+(define (sqrt x)
+  (fix-point (lambda (y) (/ x y))
+             1.0))
+(define (average x y) (/ (+ x y) 2))
+(define (sqrt x)
+  (fix-point (lambda (y) (average y (/ x y)))
+             1.0))
+
+;;平均阻尼技术
+;; 1/2 x = 1/2 f(x) ;;不动点
+;; x = 1/2 ( x + f(x)) ;;平均阻尼技术
+;; 隐含的数学思想猜想跟微分方程有关。
+
+;; 返回过程
+
+(define (average-damp f)
+  (define (average a b) (/ (+ a b) 2))
+  (lambda (x) (average x (f x))))
+
+(define (sqrt x)
+  (fix-point (average-damp (lambda (y) (/ x y)))
+             1.0))
+(sqrt 4)
+
+(define (cube-root x)
+  (fix-point (average-damp (lambda (y) (/ x (* y y))))
+             1.0))
+(cube-root 1)
+1
+(cube-root 3)
+1.4422317456294458
+(cube-root 8)
+1.999970920454376
+(cube-root 18)
+2.620722039185508
+(cube-root 27)
+3.000022143521597
+(cube-root 40)
+3.419976592519082
+
+
