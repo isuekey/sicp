@@ -62,3 +62,30 @@
 (prime? 2821)
 (prime? 6601)
 (prime? 1000081)
+
+;; 回顾代码 有个变换 没有用上 (b^2)(n/2) = (b^(n/2))^2
+(define (mr-expmod-lp2 a n exp i r)
+  (cond ((= i 0) (remainder r n))
+        ((even? i) (mr-expmod-lp2 (remainder (square a) n) n exp (/ i 2) r))
+        (else (mr-expmod-lp2 a n exp (- i 1) (remainder (* r a) n)))))
+(define (even? a) (= (remainder a 2) 0))
+(define (square a) (* a a))
+        
+(define (mr-expmod a n exp)
+  (mr-expmod-lp2 a n exp exp 1))
+(prime? 3)
+(prime? 199)
+(prime? 1999)
+(prime? 19999)
+(prime? 199999)
+(prime? 561)
+(prime? 1105)
+(prime? 1729)
+(prime? 2465)
+(prime? 2821)
+(prime? 6601)
+(prime? 1000081)
+;; 算法优化更多的是数学上证明过程的优化
+;; 而不是实现过程上的优化
+
+
