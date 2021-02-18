@@ -8,7 +8,6 @@
 ;;
 
 
-
 (define (add-rat x y)
   (make-rat (+ (* (numer x) (denom y))
                (* (numer y) (denom x)))
@@ -73,5 +72,67 @@
   (/ (+ (lower-bound i) (upper-bound i)) 2))
 (define (width i)
   (/ (- (upper-bound i) (lower-bound i)) 2))
+(define (make-center-percent c p)
+  (let ((width (/ (* c p) 100)))
+    (make-interval (- c width)
+                   (+ c width))))
+(define (percent i)
+  (* (/ (width i) (center i)) 100))
 
 ;; 电阻并联计算总电阻误差的时候
+;; R1*R2/(R1 + R2)
+(define (part1 r1 r2)
+  (div-interval (mul-interval r1 r2) (add-interval r1 r2)))
+;;1/(1/R1+1/R2)
+(define (part2 r1 r2)
+  (let ((one (make-interval 1 1)))
+    (div-interval one
+                  (add-interval (div-interval one r1)
+                                (div-interval one r2)))))
+
+;; exp.2.016需要进一步考量
+
+(list 1 2 3 4)
+(cons 1 (cons 2 (cons 3 (cons 4 ()))))
+
+(define (list-ref items n)
+  (if (= n 0)
+      (car items)
+      (list-ref (cdr items) (- n 1))))
+(define squares (list 1 4 9 16 25 36 49))
+(list-ref squares 3)
+
+(define (length items)
+  (if (null? items)
+      0
+      (+ 1 (length (cdr items)))))
+(define (length items)
+  (define (iter subs count)
+    (if (null? subs)
+        count
+        (iter (cdr subs) (+ count 1))))
+  (iter items 0))
+(define odds (list 1 3 5 7 9 11))
+(length odds)
+
+(define (append list1 list2)
+  (define (appending idx result)
+    (if (< idx 0)
+        result
+        (appending (- idx 1) (cons (list-ref list1 idx) result))))
+  (appending (- (length list1) 1) list2))
+(append odds squares)
+(append squares odds)
+;; 居然是迭代计算过程,但是计算复杂度却更大。
+;; 教材给的是递归计算过程
+
+(define (append list1 list2)
+  (if (null? list1)
+      list2
+      (cons (car list1) (append (cdr list1) list2))))
+(append odds squares)
+(append squares odds)
+
+(define squares (list 1 4 9 16 25 36 49))
+(define odds (list 1 3 5 7 9 11))
+

@@ -73,3 +73,33 @@
 
 (define (mul-interval-percent x y)
   (make-interval (* (center x) (center y)) (+ (percent x) (percent y))))
+
+(define (par1 r1 r2)
+  (div-interval (mul-interval r1 r2) (add-interval r1 r2)))
+;;1/(1/R1+1/R2)
+(define (par2 r1 r2)
+  (let ((one (make-interval 1 1)))
+    (div-interval one
+                  (add-interval (div-interval one r1)
+                                (div-interval one r2)))))
+
+(define r1 (make-center-percent 40 1))
+(define r2 (make-center-percent 40 0.5))
+(div-interval r1 r1)
+(percent (div-interval r1 r1))
+;; 1 + 1
+(div-interval r1 r2)
+(percent (div-interval r1 r2))
+;; 1 + 0.5
+
+(define pr1 (par1 r1 r2))
+(define pr2 (par2 r1 r2))
+(display pr1)
+(display (percent pr1))
+(display pr2)
+(display (percent pr2))
+
+;; pr2 显然比 pr1要好的多
+;; 考虑复核函数微分的公式，
+;; 看到区间组合与微分组合有很多相似的地方
+;; 暂时搁置吧，我考虑的有欠缺
