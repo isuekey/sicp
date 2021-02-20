@@ -136,3 +136,28 @@
 (define squares (list 1 4 9 16 25 36 49))
 (define odds (list 1 3 5 7 9 11))
 
+;; 尾部标记法 (define (f x y . z) <body>) 表示f接受至少两个参数
+;; x y 为正常参数 ， z为表 例如
+;; (f 1 2 3 4 5 6)，x=1, y=2, z=(3 4 5 6)
+;; (define (g . w) <body>) 表示0或多个参数，都用表w表示
+;; lambda方式有些区别需要注意
+;; (define f (lambda (x y .z) <body>))
+;; (define g (lambda w <body>))
+
+(define odds (list 1 3 5 7 9 11))
+(define (scale-list items factor)
+  (if (null? items)
+      ()
+      (cons (* (car items) factor)
+            (scale-list (cdr items) factor))))
+(scale-list odds 10)
+
+(define (map proc items)
+  (if (null? items)
+      ()
+      (cons (proc (car items))
+            (map proc (cdr items)))))
+(map abs (list 1 -2 -0.5 3 18))
+;; 根据map给出新的scale-list定义
+(define (scale-list items factor)
+  (map (lambda (x) (* x factor)) items))
