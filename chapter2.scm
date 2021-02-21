@@ -202,3 +202,19 @@
 ;; 考察直接定义，对之前的一些练习与思考有新的认识
 ;; 例如deep-reverse等的递归实现
 
+(define (sum-odd-squares tree)
+  (cond ((null? tree) 0)
+        ((not (pair? tree))
+         (if (odd? tree) (square tree) 0))
+        (else (+ (sum-odd-square (car tree))
+                 (sum-odd-square (cdr tree))))))
+
+(define (even-fibs n)
+  (define (next k)
+    (if (> k n)
+        ()
+        (let ((f (fib k)))
+          (if (even? f)
+              (cons f (next (+ k 1)))
+              (next (+ k 1))))))
+  (next 0))
