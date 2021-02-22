@@ -218,3 +218,20 @@
               (cons f (next (+ k 1)))
               (next (+ k 1))))))
   (next 0))
+
+;; 序列操作
+
+(define (filter predicate list)
+  (cond ((null? list) list)
+        ((predicate (car list))
+         (cons (car list) (filter predicate (cdr list))))
+        (else
+         (filter predicate (cdr list)))))
+(filter odd? (list 1 2 3 4 5 6 7))
+
+(define (accumulate op initial items)
+  (if (null? items) initial
+      (op (car items)
+          (accumulate op initial (cdr items)))))
+(accumulate + 0 (list 1 2 3 4 5 6 7 8 9 10))
+(accumulate * 1 (list 1 2 3 4 5 6 7 8 9 10))
