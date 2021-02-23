@@ -235,3 +235,17 @@
           (accumulate op initial (cdr items)))))
 (accumulate + 0 (list 1 2 3 4 5 6 7 8 9 10))
 (accumulate * 1 (list 1 2 3 4 5 6 7 8 9 10))
+
+;; Horner 规则 计算多项式
+;; a_nx^n + a_{n-1}^{n-1} + ... + a_1x + a_0 =>
+;; (...(a_nx + a_{n-1})x + ... + a_1)x + a_0
+
+(define (horner-eval x coefficient-sequence)
+  (accumulate (lambda (this-coeff higher-coeff)
+                (+ this-coeff
+                   (* x higer-coeff))
+                   )
+              0
+              coefficient-sequence))
+
+
