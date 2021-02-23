@@ -1,0 +1,6 @@
+* chapter2 
+** 区间运算 不同的计算方式有相同的区间
+*** chapter2/exp.2.016.scm
+** square-list 使用迭代计算时返回了反序的表
+*** chapter2/exp.2.022.scm 能否只用一次迭代获得正序的结果
+

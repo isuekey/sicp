@@ -161,3 +161,91 @@
 ;; 根据map给出新的scale-list定义
 (define (scale-list items factor)
   (map (lambda (x) (* x factor)) items))
+
+;; 层次性结构
+
+(cons (list 1 2) (list 3 4))
+(define x (cons (list 1 2) (list 3 4)))
+(length x)
+3
+;; (count-leaves x) => 4
+(define xx (list x x))
+(length xx)
+2
+;; (count-leaves xx) => 8
+
+(define (count-leaves  x)
+  (cond ((null? x) 0)
+        ((not (pair? x)) 1)
+        (else (+ (count-leaves (car x))
+                 (count-leaves (cdr x))))))
+(count-leaves x)
+(count-leaves xx)
+
+;; 对树的映射
+(define (scale-tree tree factor)
+  (cond ((null? tree) tree)
+        ((not (pair? tree)) (* tree factor))
+        (else (cons (scale-tree (car tree) factor)
+                    (scale-tree (cdr tree) factor)))))
+(scale-tree (list 1 (list 2 (list 3 4) 5) (list 6 7)) 10)
+;; 用map实现
+(define (scale-tree tree factor)
+  (map (lambda (x)
+         (if (pair? x)
+             (scale-tree x factor)
+             (* x factor)))
+       tree)
+  )
+(scale-tree (list 1 (list 2 (list 3 4) 5) (list 6 7)) 10)
+;; 由原来的思考整个树，变为思考某个元素的处理，隔离了树的细节
+;; 考察直接定义，对之前的一些练习与思考有新的认识
+;; 例如deep-reverse等的递归实现
+
+(define (sum-odd-squares tree)
+  (cond ((null? tree) 0)
+        ((not (pair? tree))
+         (if (odd? tree) (square tree) 0))
+        (else (+ (sum-odd-square (car tree))
+                 (sum-odd-square (cdr tree))))))
+
+(define (even-fibs n)
+  (define (next k)
+    (if (> k n)
+        ()
+        (let ((f (fib k)))
+          (if (even? f)
+              (cons f (next (+ k 1)))
+              (next (+ k 1))))))
+  (next 0))
+
+;; 序列操作
+
+(define (filter predicate list)
+  (cond ((null? list) list)
+        ((predicate (car list))
+         (cons (car list) (filter predicate (cdr list))))
+        (else
+         (filter predicate (cdr list)))))
+(filter odd? (list 1 2 3 4 5 6 7))
+
+(define (accumulate op initial items)
+  (if (null? items) initial
+      (op (car items)
+          (accumulate op initial (cdr items)))))
+(accumulate + 0 (list 1 2 3 4 5 6 7 8 9 10))
+(accumulate * 1 (list 1 2 3 4 5 6 7 8 9 10))
+
+;; Horner 规则 计算多项式
+;; a_nx^n + a_{n-1}^{n-1} + ... + a_1x + a_0 =>
+;; (...(a_nx + a_{n-1})x + ... + a_1)x + a_0
+
+(define (horner-eval x coefficient-sequence)
+  (accumulate (lambda (this-coeff higher-coeff)
+                (+ this-coeff
+                   (* x higer-coeff))
+                   )
+              0
+              coefficient-sequence))
+
+
