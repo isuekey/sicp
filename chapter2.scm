@@ -161,6 +161,9 @@
 ;; 根据map给出新的scale-list定义
 (define (scale-list items factor)
   (map (lambda (x) (* x factor)) items))
+;; 标准 map接收是过个相同长度的表
+(map + (list 1 2 3) (list 4 5 6) (list 7 8 9))
+;; 得到 (12 15 18)
 
 ;; 层次性结构
 
@@ -248,4 +251,20 @@
               0
               coefficient-sequence))
 
+;; 向量v = (v_i)，矩阵 m = (m_ij)表示为向量（矩阵行）的序列
+;; 这里很奇怪 数学上喜欢用列向量表示矩阵，程序上习惯用行向量表示矩阵
+
+(define m (list (list 1 2 3 4)
+                (list 4 5 6 6)
+                (list 6 7 8 9)))
+
+;; (dot-product v w)
+;; (matrix-*-vector m v)
+;; (matrix-m-matrix m n)
+;; (transpose m)
+
+(define (accumulate-n op init seqs)
+  (if (null? (car seqs)) ()
+      (cons (accumulate op init (map car seqs))
+            (accumulate-n op init (map cdr seqs)))))
 
