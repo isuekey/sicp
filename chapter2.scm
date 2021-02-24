@@ -268,3 +268,70 @@
       (cons (accumulate op init (map car seqs))
             (accumulate-n op init (map cdr seqs)))))
 
+(define (enumerate-interval begin end)
+  (if (>= begin end) (cons end ())
+      (cons begin (enumerate-interval (+ begin 1) end))))
+(enumerate-interval 1 10)
+
+(accumulate append
+            ()
+            (map (lambda (i)
+                   (map (lambda (j) (list i j))
+                        (enumerate-interval 1 (- i 1))))
+                 (enumerate-interval 2 n)))
+(define (ok n) (accumulate append
+            ()
+            (map (lambda (i)
+                   (map (lambda (j) (list i j))
+                        (enumerate-interval 1 (- i 1))))
+                 (enumerate-interval 2 n))))
+
+(define (accumulate op initial items)
+  (if (null? items) initial
+      (op (car items)
+          (accumulate op initial (cdr items)))))
+(define (flatmap proc seq)
+  (accumulate append () (map proc seq)))
+
+(define (prime-sum? pair)
+  (prime? (+ (car pair) (cadr pair))))
+(define (make-pair-sum pair)
+  (list (car pair) (cadr pair) (+ (car pair) (cadr pair))))
+
+(define (prime-sum-pairs n)
+  (map make-pair-sum
+       (filter prime-sum?
+               (flatmap
+                (lambda (i)
+                  (map (lambda (j) (list i j))
+                       (enumerate-interval 1 (- i 1))))
+                (enumerate-interval 1 n)))))
+(define (prime? n)
+  (= (smallest-divisor n) n))
+(define (smallest-divisor n)
+  (find-divisor n 2))
+(define (find-divisor n test-divisor)
+  (cond ((> (square test-divisor) n) n)
+        ((divisor? test-divisor n) test-divisor)
+        (else (find-divisor n (+ test-divisor 1)))))
+(define (divisor? a b)
+  (= (remainder b a) 0))
+(prime-sum-pairs 4)
+(define (kankan n)
+  (flatmap
+   (lambda (i)
+     (map (lambda (j) (list i j))
+          (enumerate-interval 1 (- i 1))))
+   (enumerate-interval 1 n)))
+
+(define (prime-sum-pairs n)
+  (map make-pair-sum
+       (filter prime-sum?
+               (flatmap
+                (lambda (i)
+                  (map (lambda (j) (list i j))
+                       (enumerate-interval 1 (- i 1))))
+                (enumerate-interval 1 n)))))
+(prime-sum-pairs 4)
+
+(define (
