@@ -334,4 +334,3 @@
                 (enumerate-interval 1 n)))))
 (prime-sum-pairs 4)
 
-(define (

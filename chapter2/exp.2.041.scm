@@ -1,0 +1,31 @@
+
+(define (tri-ele-sum n s)
+  (filter (lambda (x)
+            (= s (+ (car x) (cadr x) (caddr x))))
+          (tri-ele n)))
+(define (enumerate-interval begin end)
+  (define (iter end result)
+    (if (= begin end)
+        (cons begin result)
+        (iter (- end 1) (cons end result))))
+  (iter end ()))
+(enumerate-interval 1 3)
+(define (accumulate op initial sequence)
+  (if (null? sequence) initial
+      (op (car sequence)
+          (accumulate op initial (cdr sequence)))))
+(define (flatmap proc seq)
+  (accumulate append () (map proc seq)))
+
+(define (tri-ele n)
+  (flatmap
+   (lambda (i)
+     (flatmap (lambda (j)
+                (map (lambda (k)
+                       (list i j k))
+                     (enumerate-interval 1 (- j 1))))
+              (enumerate-interval 2 (- i 1))))
+   (enumerate-interval 3 n)))
+(tri-ele 4)
+(tri-ele-sum 10 15)  
+
