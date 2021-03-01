@@ -1,4 +1,4 @@
-
+;; 43
 (flatmap
  (lambda (new-row)
    (map (lambda (rest-of-queens)
@@ -7,6 +7,7 @@
  (enumerate-interval 1 board-size))
 ;; 8^8= 2^24个数据中筛选 每次筛选 1+2+3+4+5+6+7=28
 ;; 24 * 2^24
+;; 42
 (flatmap
  (lambda (rest-of-queens)
    (map (lambda (new-row)
@@ -14,7 +15,19 @@
         (enumerate-interval 1 block-size)))
  (queen-cols (- k 1)))
 ;; 8 * 7 * 6 * 5 * 4 * 3 *2 = 40320;
-;; 416T
+;; 416T 我这里完全是想当然哈，没有做仔细的考察
+;; 实际上如何并不清楚
+;; 这是递归求解
+;; 43 每次调用flatmap的proc都要进行一次递归计算接近
+;; 8q7+64q6+512q5+....+8^8q0
+;; 8^8q0+8^8q0+....+8^8q0 =>8^9q0
+;; 42 递归 q7+ q6+ q5 + q4 + q3 +q2 + q1 + q0
+;; 8^7*2
+;; 其实都是揣测，不是准确定义
+;;
+
+
+
 (define (queens block-size)
   (define (queen-cols k)
     (if (= k 0)
