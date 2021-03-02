@@ -54,3 +54,51 @@
         ((frame-coord-map frame) (end-segment segment))))
      segment-list)))
 
+(define (make-segment begin-vect end-vect)
+  (cons begin-vect end-vect))
+
+(define (start-segment segment)
+  (car segment))
+(define (end-segment segment)
+  (cdr segment))
+
+(define (border->painter frame)
+  (let ((origin (make-vect 0 0))
+        (edge1 (edge1-frame frame))
+        (edge2 (edge2-frame frame)))
+    ((segments->painter
+      (list
+       (make-segment origin edge1)
+       (make-segment edge1 (add-vect edge1 edge2))
+       (make-segment (add-vect edge1 edge2) edge2)
+       (make-segment edge2 origin))
+     frame)))
+(define (diagonal->painter frame)
+  (let ((origin (make-vect 0 0))
+        (edge1 (edge1-frame frame))
+        (edge2 (edge2-frame frame)))
+    ((segments->painter
+      (list
+       (make-segment origin (add-vect edge1 edge2))
+       (make-segment edge1 edge2)))
+     frame)))
+
+(define (diamond->painter frame)
+  (let ((edge1 (edge1-frame frame))
+        (edge2 (edge2-frame frame)))
+    ((segments->painter
+      (list
+       (make-segment (scale-vect 0.5 edge1) (add-vect edge1 (scale-vect 0.5 edge2)))
+       (make-segment (add-vect edge1 (scale-vect 0.5 edge2)) (add-vect edge2 (scale-vect 0.5 edge1)))
+       (make-segment (add-vect edge2 (scale-vect 0.5 edge1)) (scale-vect 0.5 edge2))
+       (make-segment (scale-vect 0.5 edge2) (scale-vect 0.5 edge1))))
+     frame)))
+
+(define (wave frame)
+  (let ((edge1 (edge1-frame frame))
+        (edge2 (edge2-frame frame)))
+    ((segments->painter
+      (list
+
+       
+                                                                   
