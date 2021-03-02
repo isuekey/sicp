@@ -334,3 +334,121 @@
                 (enumerate-interval 1 n)))))
 (prime-sum-pairs 4)
 
+
+(define wave2 (beside wave (flip-vert wave)))
+(define wave4 (below wave2 wave2))
+
+;; 抽象过程的方式处理wave
+(define (flipped-pairs painter)
+  (let ((painter2 (beside painter (flip-vert painter))))
+    (below painter2 painter2)))
+(define wave4 (flipped-pairs wave))
+
+(define (right-split painter n)
+  (if (= n 0)
+      painter
+      (let ((smaller (right-split painter (- n 1))))
+        (beside painter (below smaller smaller)))))
+(define (corner-split painter n)
+  (if (= n 0)
+      painter
+      (let ((up (up-split painter (- n 1)))
+            (right (right-split painter (- n 1))))
+        (let ((top-left (beside up up))
+              (bottom-right (below right right))
+              (corner (corner-split painter (- n 1))))
+          (beside (below painter top-left)
+                  (below bottom-right corner))))))
+(define (up-split painter n)
+  (if (= n 0)
+      painter
+      (let ((smaller (up-split painter (- n 1))))
+        (below painter (beside smaller smaller)))))
+
+(define (square-limit painter n)
+  (let ((quarter (corner-split (painter n)))
+        (let ((half (beside (flip-horiz quater) quarter)))
+          (below (flip-vert half) half)))))
+
+
+(define (quare-of-four tl tr bl br)
+  (lambda (painter)
+    (let ((top (beside (tl painter) (tr painter)))
+          (bottom (beside (bl painter) (br painter))))
+      (below bottom top))))
+
+(define (flipped-pairs painter)
+  (let ((combine4 (square-of-four identity fip-vert identity flip-vert)))
+    (combine4 painter)))
+(define (square-limit painter n)
+  (let ((combine4 (square-of-four flip-horiz identity rotate180 flip-vert)))
+    (combine4 (corner-split painter n))))
+
+;; 可以抽象的处理，而不关心实现
+
+;; make-frame origin-frame edge1-frame edge2-frame
+
+(define (frame-coord-map frame)
+  (lambda (v)
+    (add-vect
+     (origin-frame frame)
+     (add-vect (scale-vect (xcor-vect v)
+                           (edge1-frame frame))
+               (scale-vect (ycor-vect v)
+                           (edge2-frame frame))))))
+((frame-coord-map a-frame) (make-vect 0 0))
+;; 结果如下
+(origin-frame a-frame)
+
+
+;;46
+(define make-vect cons)
+(define xcor-vect car)
+(define ycor-vect cdr)p
+
+(define (add-vect v1 v2)
+  (make-vect
+   (+ (xcor-vect v1) (xcor-vect v2))
+   (+ (ycor-vect v1) (ycor-vect v2))))
+(define (sub-vect v1 v2)
+  (make-vect
+   (- (xcor-vect v1) (xcor-vect v2))
+   (- (ycor-vect v1) (ycor-vect v2))))
+(define (scale-vect s v)
+  (make-vect
+   (* s (xcor-vect v))
+   (* s (ycor-vect v))))
+;;47
+(define (make-frame origin edge1 edge2)
+  (list origin edge1 edge2))
+(define (origin-frame frame)
+  (car frame))
+(define (edge1-frame frame)
+  (car (cdr frame)))
+(define (edge2-frame frame)
+  (car (cdr (cdr frame))))
+
+(define (make-frame origin edge1 edge2)
+  (cons origin (cons edge1 edge2)))
+(define (origin-frame frame)
+  (car frame))
+(define (edge1-frame frame)
+  (car (cdr frame)))
+(define (edge2-frame frame)
+  (cdr (cdr frame)))
+
+;; 23
+(define (for-each proc list)
+  (if (null? list) list
+      (let ()
+        (proc (car list))
+        (for-each proc (cdr list)))))
+
+(define (segments->painter segement-list)
+  (lambda (frame)
+    (for-each
+     (lambda (segment)
+       (draw-line
+        ((frame-coord-map frame) (start-segment segment))
+        ((frame-coord-map frame) (end-segment segment))))
+     segment-list)))

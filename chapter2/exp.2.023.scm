@@ -23,7 +23,7 @@
         (proc (car list))
         (foreach proc (cdr list)))))
 (foreach (lambda (x) (newline) (display x))
-          (list 57 321 88))
+         (list 57 321 88))
 
 ;; 这里let过程主要是为了建立一个过程块
 ;; 应该有更好的过程表示方式
