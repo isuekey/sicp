@@ -99,6 +99,23 @@
         (edge2 (edge2-frame frame)))
     ((segments->painter
       (list
+       (make-segment (add-vect (scale-vect 0.8 edge1) (scale-vect 0 edge2)) (add-vect (scale-vect 0.6 edge1) (scale-vect 0.2 edge2)))
+       (make-segment (add-vect (scale-vect 0.6 edge1) (scale-vect 0.2 edge2)) (add-vect (scale-vect 0.7 edge1) (scale-vect 0.3 edge2)))
+       (make-segment (add-vect (scale-vect 0.7 edge1) (scale-vect 0.3 edge2)) (add-vect (scale-vect 0.7 edge1) (scale-vect 0.4 edge2)))
+       (make-segment (add-vect (scale-vect 0.7 edge1) (scale-vect 0.4 edge2)) (add-vect (scale-vect 0.9 edge1) (scale-vect 0.3 edge2)))
+       (make-segment (add-vect (scale-vect 0.9 edge1) (scale-vect 0.3 edge2)) (add-vect (scale-vect 1 edge1) (scale-vect 0.4 edge2)))
+       (make-segment (add-vect (scale-vect 1 edge1) (scale-vect 0.6 edge2)) (add-vect (scale-vect 0.9 edge1) (scale-vect 0.7 edge2)))
+       (make-segment (add-vect (scale-vect 0.9 edge1) (scale-vect 0.7 edge2)) (add-vect (scale-vect 0.7 edge1) (scale-vect 0.6 edge2)))
+       (make-segment (add-vect (scale-vect 0.7 edge1) (scale-vect 0.6 edge2)) (add-vect (scale-vect 0.7 edge1) (scale-vect 0.8 edge2)))
+       (make-segment (add-vect (scale-vect 0.7 edge1) (scale-vect 0.8 edge2)) (add-vect (scale-vect 0.4 edge1) (scale-vect 1 edge2)))
+       (make-segment (add-vect (scale-vect 0.2 edge1) (scale-vect 1 edge2)) (add-vect (scale-vect 0.5 edge1) (scale-vect 0.6 edge2)))
+       (make-segment (add-vect (scale-vect 0.5 edge1) (scale-vect 0.6 edge2)) (add-vect (scale-vect 0 edge1) (scale-vect 0.8 edge2)))
+       (make-segment (add-vect (scale-vect 0 edge1) (scale-vect 0.6 edge2)) (add-vect (scale-vect 0.2 edge1) (scale-vect 0.5 edge2)))
+       (make-segment (add-vect (scale-vect 0.2 edge1) (scale-vect 0.5 edge2)) (add-vect (scale-vect 0 edge1) (scale-vect 0.4 edge2)))
+       (make-segment (add-vect (scale-vect 0 edge1) (scale-vect 0.2 edge2)) (add-vect (scale-vect 0.5 edge1) (scale-vect 0.4 edge2)))
+       (make-segment (add-vect (scale-vect 0.5 edge1) (scale-vect 0.4 edge2)) (add-vect (scale-vect 0.6 edge1) (scale-vect 0.3 edge2)))
+       (make-segment (add-vect (scale-vect 0.6 edge1) (scale-vect 0.3 edge2)) (add-vect (scale-vect 0.4 edge1) (scale-vect 0.2 edge2)))
+       (make-segment (add-vect (scale-vect 0.4 edge1) (scale-vect 0.2 edge2)) (add-vect (scale-vect 0.6 edge1) (scale-vect 0 edge2)))
+       )) frame)))
 
-       
-                                                                   
+
