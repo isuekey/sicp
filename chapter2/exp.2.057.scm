@@ -58,3 +58,19 @@
   (cadr exp))
 (define (exponent exp)
   (caddr exp))
+
+(define (augend s)
+  (let ((augs (cddr s)))
+    (if (>= (length augs) 2)
+        (cons '+  augs)
+        (car augs))))
+(define (multiplicand p)
+  (let ((cands (cddr p)))
+    (if (>= (length cands) 2)
+        (cons '* cands)
+        (car cands))))
+
+
+(deriv '(* x y (+ x 3)) 'x)
+
+
