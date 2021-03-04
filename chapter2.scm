@@ -571,3 +571,31 @@
 (deriv '(+ x 3) 'x)
 (deriv '(* x y) 'x)
 (deriv '(* (* x y) (+ x 3)) 'x)
+
+(define (element-of-set? x set)
+  (cond ((null? set) #f)
+        ((equal? x (car set)) #t)
+        (else (element-of-set? x (cdr set)))))
+(define (adjoin-set ele set)
+  (if (element-of-sets ele set) set
+      (cons ele set)))
+;; 使用递归计算获取交集
+(define (intersection-set set1 set2)
+  (cond ((or (null? set1) (null? set2)) '())
+        ((element-of-set? (car set1) set2)
+         (cons (car set1) (intersection-set (cdr set1) set2)))
+        (else (intersection-set (cdr set1) set2))))
+;; 其实可以用filter来处理，可能计算量偏大
+(define (intersection-set set1 set2)
+  (filter (lambda (ele)
+            (element-of-set ele set2))
+          set1))
+;; 使用教材类似的过程处理union-set
+(define (union-set set1 set2)
+  (cond ((null? set1) set2)
+        ((null? set2) set1)
+        ((element-of-set? (car set1) set2)
+         (union-set (cdr set1) set2))
+        (else
+         (cons (car set1) (union-set (cdr set1) set2)))))
+
