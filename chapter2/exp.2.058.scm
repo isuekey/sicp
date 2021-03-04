@@ -68,4 +68,35 @@
 ;; 没有问题
 (deriv '(x + 3 * x + y + 4 * x) 'x)
 ;; 这就有问题 会是 16
+;; b
+;; 根据教材的提示，我们应该先区分出加法，再区分出乘法
+;; 这是由于我们用递归计算实现的过程，后检测出的表达式先被执行
+;; 乘法项含有加法，需要使用()进行处理，这已经包含在以有的过程中了
+;; 至于复合幂乘不在本题范围内。但是思路与加法组合乘法是一致的。
+;; 调整加法相关的过程
+(define (memq exp op)
+  (cond ((not (pair? exp)) #f)
+        ((eq? (car exp) op) exp)
+        (else (memq (cdr exp) op))))
+(define (sum? exp)
+  (memq exp '+))
+(define (addend exp)
+  (define (iter subs)
+    (cond ((null? subs) '())
+          ((eq? (car subs) '+) '())
+          (else (cons (car subs) (iter (cdr subs))))))
+  (let ((addends (iter exp)))
+    (if (= (length addends) 1) (car addends)
+        addends)))
+(addend '(3 * x + y + 4 * x))
+;; (3 * x)
+(addend '(y + 4 * x))
+;; y
+(define (augend exp)
+  (cdr (memq exp '+)))
+(sum? '(3 * x + y + 4 * x))
+(memq '(3 * x + y + 4 * x) '+)
+(augend '(3 * x + y + 4 * x))
+(deriv '(x + 3 * x + y + 4 * x) 'x)
+;; 8
 
