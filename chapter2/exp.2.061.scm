@@ -1,5 +1,5 @@
 
-;; 生序表
+;; 升序表
 (define (adjoin-set x set)
   (cond ((null? set) (cons x set))
         ((= x (car set)) set)
