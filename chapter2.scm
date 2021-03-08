@@ -617,7 +617,7 @@
 (define (entry tree) (car tree))
 (define (left-branch tree) (cadr tree))
 (define (right-branch tree) (caddr tree))
-(define (make-tree entiry left right)
+(define (make-tree entry left right)
   (list entry left right))
 
 (define (element-of-set? x set)
@@ -638,3 +638,60 @@
          (make-tree (entry set)
                     (left-branch set)
                     (adjoin-set x (right-branch set))))))
+
+
+;; Huffman树
+(define (make-leaf symbol weight)
+  (list 'leaf symbol weight))
+(define (leaf? node)
+  (eq? (car node) 'leaf))
+(define (symbol-leaf node) (cadr node))
+(define (weight-leaf node) (caddr node))
+
+(define (make-code-tree left right)
+  (list left
+        right
+        (append (symbols left) (symbols right))
+        (+ (weight left) (weight right))))
+
+(define (left-branch tree) (car tree))
+(define (right-branch tree) (cadr tree))
+(define (symbols node)
+  (if (leaf? node) (list (symbol-leaf node))
+      (caddr node)))
+(define (weight node)
+  (if (leaf? node) (weight-leaf node)
+      (cadddr node)))
+;; 解码过程
+(define (decode bits tree)
+  (define (decode-1 bits current-branch)
+    (if (null? bits)
+        '()
+        (let ((next-branch
+               (choose-branch (car bits) current-branch)))
+          (if (leaf? next-branch)
+              (cons (symbol-leaf next-branch)
+                    (decode-1 (cdr bits) tree))
+              (decode-1 (cdr bits) next-branch)))))
+  (decode-1 bits tree))
+(define (choose-branch bit branch)
+  (cond ((= bit 0) (left-branch branch))
+        ((= bit 1) (right-branch branch))
+        (else (error "bad bit --- CHOOSE BRANCH" bit))))
+
+(define (adjoin-set x set)
+  (cond ((null? set) (list x))
+        ((< (weight x) (weight (car set))) (cons x set))
+        (else (cons (car set)
+                    (adjoin-set x (cdr set))))))
+
+;; ((A 4) (B 2) (C 1) (D 1))
+;; 构造出树叶的排序集合
+(define aList (list (list 'A 4) (list 'B 2) (list 'C 1) (list 'D 1)))
+
+(define (make-leaf-set pairs)
+  (if (null? pairs) '()
+      (let ((pair (car pairs)))
+        (adjoin-set (make-leaf (car pair)
+                               (cadr pair))
+                    (make-leaf-set (cdr pairs))))))
