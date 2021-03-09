@@ -39,6 +39,7 @@
 
 (define (generate-huffman-tree pairs)
   (successive-merge (make-leaf-set pairs)))
+;; 这个是错的
 (define (successive-merge leafs)
   (define (iter-merge leafs)
     (cond ((null? leafs) '())
@@ -89,16 +90,19 @@
 (define (generate-huffman-tree pairs)
   (successive-merge (make-leaf-set pairs)))
 (define (successive-merge leafs)
-  (define (iter-merge leafs result)
-    (cond ((null? leafs) result)
-          ((pair? (cadr leafs))
-           (iter-merge (cddr leafs) (cons (make-code-tree (car leafs)
-                                                          (cadr leafs)) result)))
-          (else (make-code-tree (car leafs) result))))
-  (if (or (null? leafs) (< (length leafs) 2))
-      leafs
-      (successive-merge (iter-merge leafs '()))))
+  (cond ((null? leafs) '())
+        ((= (length leafs) 1) (car leafs))
+        ((= (length leafs) 2) (make-code-tree (cadr leafs) (car leafs)))
+        (else (let ((first (car leafs))
+                    (second (cadr leafs))
+                    (third (caddr leafs)))
+                (cond ((<= (weight first) (weight second))
+                       (successive-merge (cons (make-code-tree second first) (cddr leafs))))
+                      (else
+                       (successive-merge (cons first (cons (make-code-tree third second) (cdddr leafs))))))))))
+
 (define bTree (generate-huffman-tree bList))
+;; (generate-huffman-tree aList)
 
 (define bMessage '(Get a job
                        Sha na na na na na na na na
@@ -107,5 +111,12 @@
                        Wah yip yip yip yip yip yip yip yip yip
                        Sha boom))
 (length (encode bMessage bTree))
-
+;; 86
+;; 这个结果还是令我满意的。节约了20%空间
+;; 至于是否是最优解，我没有看答案
+;;
+;; 编码树其实集合的长度至少要是2，因为如果少于一个字符，那么不需要编码
+;; 只需要给长度数字就可以了.
+;;
+;; 
 
