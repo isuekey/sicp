@@ -736,7 +736,7 @@
 (define (make-from-mag-ang r a) (cons r a))
 
 ;; 2.4.2 带标志数据
-(define (attach-tag type-tag contents) (const type-tag contents))
+(define (attach-tag type-tag contents) (cons type-tag contents))
 (define (type-tag datum)
   (if (pair? datum) (car datum)
       (error "Bad tagged datum" datum)))
@@ -879,7 +879,7 @@
 (define (apply-generic op arg) (arg op))
 
 
-;; 数据导向的
+;; 数据导向的 通用算术包
 (define (apply-generic op . args)
   (let ((type-tags (map type-tag args)))
     (let ((proc (get op type-tags)))
@@ -947,4 +947,64 @@
   'done)
 (define (make-rational-number n d)
   ((get 'make 'rational) n d))
+
+;; 从这里看，我们对显示调用，数据导向以及消息传递的理解不深刻
+;; 至少数据导向的理解过于浮于表面。
+;; 
+
+(define (install-complex-package)
+  (define (make-from-real-imag x y)
+    ((get 'make-from-real-imag 'rectangular) x y))
+  (define (make-from-mag-ang r a)
+    ((get 'make-from-mag-ang 'polar) r a))
+
+  (define (add-complex z1 z2)
+    (make-from-real-imag (+ (real-part z1) (real-part z2))
+                         (+ (imag-part z1) (imag-part z2))))
+  (define (sub-complex z1 z2)
+    (make-from-real-imag (- (real-part z1) (real-part z2))
+                         (- (imag-part z1) (imag-part z2))))
+  (define (mul-complex z1 z2)
+    (make-from-real-imag (* (magnitude z1) (magnitude z2))
+                         (+ (angle z1) (angle z2))))
+  (define (div-complex z1 z2)
+    (make-from-real-imag (/ (magnitude z1) (magnitude z2))
+                         (- (angle z1) (angle z2))))
+
+  (define (tag z) (attach-tag 'complex z))
+  (put 'add '(complex complex)
+       (lambda (z1 z2) (tag (add-complex z1 z2))))
+  (put 'sub '(complex complex)
+       (lambda (z1 z2) (tag (sub-complex z1 z2))))
+  (put 'mul '(complex complex)
+       (lambda (z1 z2) (tag (mul-complex z1 z2))))
+  (put 'div '(complex complex)
+       (lambda (z1 z2) (tag (div-complex z1 z2))))
+  (put 'make-from-real-imag 'complex
+       (lambda (x y) (tag (make-from-real-imag x y))))
+  (put 'make-from-mag-ang 'complex
+       (lambda (r a) (tag (make-from-mag-ang r a))))
   
+  'done)
+
+(define (make-from-real-imag x y)
+  ((get 'make-from-real-imag 'complex) x y))
+(define (make-from-mag-ang r a)
+  ((get 'make-from-mag-ang 'complex) r a))
+
+;; 强制
+;; 显示处理
+(define (add-complex-to-schemenum z x)
+  (make-from-real-imag (+ (real-part z) x)
+                       (imag-part z)))
+;; 强制转换
+(define (scheme-number->complex n)
+  (make-complex-from-real-imag (contents n) 0))
+(put-coercion 'scheme-number 'complex scheme-number->complex)
+
+(define (apply-generic op . args)
+  (let ((type-tags (map type-tag args)))
+    (let ((proc (get op type-tags)))
+      (if proc
+          (apply proc (map contents args))
+          (if 
