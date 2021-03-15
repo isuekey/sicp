@@ -38,8 +38,6 @@
 
   (put 'numer '(rational) numer)
   (put 'denom '(rational) denom)
-  (put 'raise 'rational
-       (lambda (ration raiseup) (raiseup ration)))
   
   'done)
 (define (make-rational-number n d)
@@ -86,6 +84,8 @@
       (if proc
           (apply proc (map contents args))
           (error "no method for these type -- APPLY-GENERIC" (list op type-tags))))))
+(put 'raise 'rational
+     (lambda (ration raiseup) (raiseup ration)))
 
 (define (raise-rational ration raiseup)
   ((get 'raise 'rational) ration

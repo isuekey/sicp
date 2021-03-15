@@ -104,3 +104,37 @@
 
 |#
 
+(put 'raise 'rational
+     (lambda (ration)
+       ((get 'make-from-mag-ang 'complex)
+        (/ (apply-generic 'numer ration)
+           (apply-generic 'denom ration))
+        0)))
+
+
+(put 'raise 'scheme-number
+     (lambda (x)
+       ((get 'make-rational-number) x 1)))
+
+(define numberLevle '((scheme-number 1) (rationl 2) (complex 3)))
+(define (getLevel tag)
+  (let ((level (filter (lambda (ele) (eq? tag (car ele))) numberLevel)))
+    (if (null? level) 3
+        (cadr (car level)))))
+
+(define (apply-generic op . args)
+  (let ((type-tags (map type-tag args)))
+    (let ((proc (get op type-tags)))
+      (if proc
+          (apply proc (map contents args))
+          ;; 这里就不检查了 在 exp.2.082 提过应该是累积的方式处理。
+          (let ((level1 (getLevel (car type-tags)))
+                (level2 (getLevel (cadr type-tags)))
+                (a1 (car args))
+                (a2 (cadr args)))
+            (cond ((< level1 level2)
+                   (apply-generic op ((get 'raise (car type-tags)) a1) a2))
+                  ((> level1 leve2)
+                   (apply-generic op a1 ((get 'raise (cadr type-tags)) a2)))
+                  (else
+                   (error "不知道"))))))))
