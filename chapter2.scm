@@ -1021,3 +1021,43 @@
                         (else
                          (error "no method for these types" (list op type-args))))))
               (error "no method for these types" (list op type-args)))))))
+
+;; 算术多项式
+(define (add-poly p1 p2)
+  (if (same-variable? (variable p1) (variable p2))
+      (make-poly (variable p1)
+                 (add-terms (term-list p1)
+                            (term-list p2)))
+      (error "Polys not in sayme var--ADD POLY" (list p1 p2))))
+(define (mul-poly p1 p2)
+  (if (make-variable? (variable p1) (variable p2))
+      (make-poly (variable p1)
+                 (mul-terms (term-list p1)
+                            (term-list p2)))
+      (error "Polys not in sayme var--MUL POLY" (list p1 p2))))
+
+(define (install-polynomial-package)
+  ;;
+  (define (make-poly variable term-list)
+    (cons variable term-list))
+  (define (variable p) (car p))
+  (define (term-list p) (cdr p))
+  ;; same-variable?
+  ;; variable?
+  ;; adjoin-term
+
+  (define (add-poly p1 p2) ())
+
+  (define (mul-poly p1 p2) ())
+
+  (define (tag p) (attach-tag 'polynomial p))
+  (put 'add '(polynomial polynomial)
+       (lambda (p1 p2) (tag (add-poly p1 p2))))
+  (put 'mul '(polynomial polynomial)
+       (lambda (p1 p2) (tag (mul-poly p1 p2))))
+  (put 'make 'polynomial
+       (lambda (var terms) (tag (make-poly var terms))))
+  'done)
+
+
+  
