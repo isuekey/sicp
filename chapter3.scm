@@ -100,3 +100,50 @@
     (iter)))
 
 
+(define (square x) (* x x))
+(define (sum-of-squares x y)
+  (+ (square x ) (square y)))
+(define (f a)
+  (sum-of-square (+ a 1) (* a 2)))
+#|
+E0: 
+  square: (* x x)
+  sum-of-squares: (+ (square x) (square y))
+  f: (sum-of-squares (+ a 1) (* a 2))
+  +,*...
+|#
+(f 5)
+#|
+E1:
+  P:E0
+  a:5
+  (sum-of-squares (+ a 1) (* a 2)) E1找不到sum-of-square然后到E0中找到
+  (sum-of-squares 6 10)
+  E2 返回 136
+|#
+#|
+E2
+  P:E1
+  x:6
+  y:10
+  (+ (square x) (square y)) E2找不square-》E1没有-》E0中找到
+  (+ (square 6) (square 10))
+  E3 E4 依次返回响应（顺序不一定，看编译器的具体实现）
+  (+ 36 100)
+|#
+#|
+E3
+  P:E2
+  x:6
+  (square x) E3找不square-》E2没有-》E1没有-》E0中找到
+  (* 6 6)
+|#
+#|
+E4
+  P:E2
+  x:10
+  (square x) E4找不square-》E2没有-》E1没有-》E0中找到
+  (* 10 10)
+|#
+
+;; 内部定义
