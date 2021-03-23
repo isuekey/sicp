@@ -10,6 +10,9 @@
       (cond ((not (pair? p)) 0)
             ((hasit (car p) counted) (iter-count (cdr p)))
             ((hasit (cdr p) counted) (iter-count (car p)))
+            ((equal? (car p) (cdr p))
+             (set! counted (cons p counted))
+             (+ (iter-count (car p)) 1))
             (else
              (set! counted (cons p counted))
              (+ (iter-count (car p))
