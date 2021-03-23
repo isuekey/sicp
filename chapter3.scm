@@ -158,3 +158,69 @@ E4
         guess
         (sqrt-iter (improve guess))))
   (sqrt-iter 1.0))
+
+(define (append! x y)
+  (set-cdr! (last-pair x) y)
+  x)
+
+(define (last-pair x)
+  (if (null? (cdr x)) x
+      (last-piar (cdr x))))
+
+(define x '(a b))
+(define y (list 'c 'd))
+(define z (append x y))
+(cdr x)
+
+(define w (append! x y))
+(cdr x)
+
+(define x '(a b))
+(define z (cons x x))
+x
+z
+(define z1 (cons x x))
+(define z2 (cons (list 'a 'b) (list 'a 'b)))
+z2
+#|
+;; 虽然数据结构符合预测，但是展示的结果有些意外，
+;; 对list和cons的理解还是不够深刻。
+;; 虽然都是 ((a b) a b)如果不修改是察觉不出来的。但是修改就不同了
+|#
+
+(define (set-to-wow! x)
+  (set-car! (car x) 'wow)
+  x)
+(set-to-wow! z1)
+(set-to-wow! z2)
+
+
+(define (cons x y)
+  (define (dispatch m)
+    (cond ((eq? m 'car) x)
+          ((eq? m 'cdr) y)
+          (else (error "Undefined operation -- CONS" m))))
+  dispatch)
+
+(define (car z) (z 'car))
+(define (cdr z) (z 'cdr))
+
+
+(define (cons x y)
+  (define (set-x! v) (set! x v))
+  (define (set-y! v) (set! y v))
+  (define (dispatch m)
+    (cond ((eq? m 'car) x)
+          ((eq? m 'cdr) y)
+          ((eq? m 'set-car!) set-x!)
+          ((eq? m 'set-cdr!) set-y!)
+          (else (error "Undefined operation -- CONS" m))))
+  dispatch)
+(define (car z) (z 'car))
+(define (cdr z) (z 'cdr))
+(define (set-car! z new-value) ((z 'set-x!) new-value) z)
+(define (set-cdr! z new-value) ((z 'set-y!) new-value) z)
+
+
+
+
