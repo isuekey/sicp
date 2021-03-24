@@ -37,8 +37,26 @@
   遍历alist的元素，检查是否存在其他位置与自身相等
   把list看成一个树的话，
   如果要构成一个环，那么环的入口元素必然在它的叶子上
-  如果没有构成环，就没有这种
+  如果没有构成环，就没有这种结构
 |# 
+(define (haspair? pair leafs)
+  (cond ((not (pair? leafs)) #f)
+        ((equal? pair leafs) #t)
+        ((haspair? pair (car leafs)) #t)
+        ((haspair? pair (cdr leafs)) #t)
+        (else #f)))
 (define (check-cycle alist)
-  
-  )
+  (cond ((not (pair? alist)) #f)
+        ((or (haspair? alist (car alist))
+             (haspair? alist (cdr alist))) #t)
+        (else
+         (or (check-cycle (car alist))
+             (check-cycle (cdr alist))))))
+(check-cycle z)
+(check-cycle '(a b c))
+
+#|
+  但是有个问题，这并不是迭代计算，这是一个线性递归计算
+  所以严格来讲空间并不是常量的, 还需要想其他的方式进行处理
+  暂时没有思路，先扔到挑战里
+|#

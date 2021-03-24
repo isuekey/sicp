@@ -6,4 +6,6 @@
 ** exp.2.073及之后的可能都需要重新处理
 * chapter3
 ** 序对计数
-*** chapter2/exp.3.017.scm
+*** DONE chapter3/exp.3.017.scm 已经解决了
+*** chapter3/exp.3.019.scm
+
