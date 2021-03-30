@@ -1,4 +1,6 @@
-
+#|
+exp.3.024.scm
+|#
 ;; 求导过程
 (define (deriv exp var)
   (cond ((number? exp) 0)
@@ -42,8 +44,10 @@
 (define (install-add-deriv-package)
   (define (make-sum addend augend)
     (list '+ addend augend))
-  (define (addend s) (cadr s))
-  (define (augend s) (acddr s))
+  (define (addend s)
+    (car s))
+  (define (augend s)
+    (cadr s))
   (define (sum? s) (eq? (car s) '+))
 
   (put 'make-sum '+ make-sum)
@@ -52,6 +56,8 @@
                              (deriv (augend exp) var))))
   
   'done)
+(install-add-deriv-package)
+(deriv '(+ x x) 'x)
 
 (define (install-mul-deriv-package)
   (define (make-product multiplier multiplicand)
@@ -97,7 +103,7 @@
 
   'done)
 ;; d)
-((get (operator exp) 'deriv) (operands exp) var)
+;; ((get (operator exp) 'deriv) (operands exp) var)
 #|
 各自的安装包里的(put 'deriv <operator> <??>)更改为
 (put <operator> 'deriv <??>)即可
