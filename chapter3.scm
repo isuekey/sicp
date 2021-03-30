@@ -278,7 +278,6 @@ z2
         (set-cdr! table
                   (cons (cons key val) (cdr table)))))
   'ok)
-
 #|
   两维表格
 |#
@@ -332,3 +331,4 @@ z2
 (define operation-table (make-table))
 (define get (operation-table 'lookup-proc))
 (define put (operation-table 'insert-proc))
+
