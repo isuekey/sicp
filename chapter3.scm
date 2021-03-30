@@ -264,6 +264,7 @@ z2
   (cdr table) 表示表的内容
   (car table) 表的表头
 |#
+(define (make-table) (cons '*table* '())
 (define (lookup key table)
   (let ((record (assoc key (cdr table))))
     (if record (cdr record)
@@ -304,6 +305,10 @@ z2
 |#
 (define (make-table)
   (let ((local-table (list '*table*)))
+    (define (assoc key records)
+      (cond ((null? records) #f)
+            ((equal? key (caar records)) (car records))
+            (else (assoc key (cdr records)))))
     (define (lookup key-1 key-2)
       (let ((subtable (assoc key-1 (cdr local-table))))
         (if subtable
@@ -322,7 +327,6 @@ z2
                       (cons (list key-1 (cons key-2 value))
                             (cdr local-table)))))
       'ok)
-    
     (define (dispatch m)
       (cond ((eq? m 'lookup-proc) lookup)
             ((eq? m 'insert-proc) insert!)
