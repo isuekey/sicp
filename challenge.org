@@ -4,6 +4,8 @@
 ** square-list 使用迭代计算时返回了反序的表
 *** chapter2/exp.2.022.scm 能否只用一次迭代获得正序的结果
 ** exp.2.073及之后的可能都需要重新处理
+*** DONE exp.2.073
+*** exp.2.074
 * chapter3
 ** 序对计数
 *** DONE chapter3/exp.3.017.scm 已经解决了
