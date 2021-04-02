@@ -270,4 +270,8 @@ d(uv)/dx = u(dv/dx)+v(du/dx)
 **** 事件驱动的模拟（怀疑与发布订阅有关）
 ***** 基本构件：规定行为：输入信号，延迟事件，输出信号
 ***** 连线：传递信号，扩展：（感应干扰信号）
-***** 
+**** 基本功能块
+***** (get-signal <wire>)
+***** (set-signal! <wire> <new value>)
+***** (add-action! <wire> <procedure of no arguments>)
+***** (after-delay)
