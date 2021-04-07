@@ -577,7 +577,7 @@
         ((equal? x (car set)) #t)
         (else (element-of-set? x (cdr set)))))
 (define (adjoin-set ele set)
-  (if (element-of-sets ele set) set
+  (if (element-of-set? ele set) set
       (cons ele set)))
 ;; 使用递归计算获取交集
 (define (intersection-set set1 set2)

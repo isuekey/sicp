@@ -22,7 +22,7 @@
             (else
              (lookup-iter (cdr keys) (assoc (car keys) (cdr record))))))
     (define (lookup . keys)
-      (look-iter keys local-table))
+      (cdr (lookup-iter keys local-table)))
     #|
     (define (insert-iter! key keys record)
       (let ((fund (assoc key (cdr record))))
@@ -36,14 +36,34 @@
               ((null? (cdr keys)) (set-cdr! fund (car keys)))
     我再想想。现在有些乱。虽然一定是递归的进行，但是
     有些过程细节，需要重新梳理
-    |#        
-    (define (insert! . keys)
-      (if (null? keys) 'ok
-          (insert-iter (car keys) (cdr keys) local-table)))
+    |#
+    (define (insert-iter key1 key2 keys node)
+      (let ((record (assoc key1 (cdr node))))
+        (cond ((not record)
+               (let ((new-node (cons key1 key2)))
+                 (set-cdr! node (cons new-node (cdr node)))
+                 (cond ((null? keys) 'ok)
+                       (else
+                        (set-cdr! new-node '())
+                        (insert-iter key2 (car keys) (cdr keys) new-node)))))
+              (else
+               (cond ((null? keys)
+                      (set-cdr! record key2))
+                     (else
+                      (insert-iter key2 (car keys) (cdr keys) record)))))))
+    (define (insert! key1 key2 . keys)
+      (insert-iter key1 key2 keys local-table))
     dispatch))
 
+(define mm (make-table))
+(define insert-mm (mm 'insert-proc))
+(insert-mm 'a 'b 'c 'd)
+(insert-mm 'a 'b 'd 'e)
+(define lookup-mm (mm 'lookup-proc))
+(lookup-mm 'a)
+(lookup-mm 'a 'b)
+(lookup-mm 'a 'b 'c)
+(lookup-mm 'a 'b 'd)
 
-(define (oo . keys)
-  (display keys)
-  (newline))
-(oo 'a 'b 'c)
+
+

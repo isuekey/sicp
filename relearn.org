@@ -275,3 +275,5 @@ d(uv)/dx = u(dv/dx)+v(du/dx)
 ***** (set-signal! <wire> <new value>)
 ***** (add-action! <wire> <procedure of no arguments>)
 ***** (after-delay)
+**** 路线的表示
+***** 
