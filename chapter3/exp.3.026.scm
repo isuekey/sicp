@@ -17,7 +17,7 @@
 |#
 
 (define (make-table)
-  (let ((local-table (list '*table* '())))
+  (let ((local-table (list (cons '*table* '()))))
     ;; node: tree or leaf
     ;; tree: (list (cons key val) left right)
     ;; leaf: (list (cons key val))
@@ -70,8 +70,23 @@
        这样就好了。不然就可替换local-table的，并且所有
        从头开始，梳理完，觉得可以写了
     |#
+    (define (adjoin item tree)
+      (let ((key (tree-key)))
+        (cond ((same-key? key (car item)) (set-car! tree item))
+              ((less-key?
+            
+      (cond ((null? tree) #f)
+            ((same-key? key (tree-key tree)) (item-tree tree))
+            ((leaf-tree? tree) #f)
+            ((less-key? key (tree-key tree)) (assoc key (left-tree tree)))
+            (else (assoc key (right-tree tree)))))
+      )
+                                
     (define (insert-iter! key1 key2 keys item)
       (let ((subitem (lookup-iter key1 '() item)))
+        (if (not subitem)
+            (cond ((null? keys)
+                   (set-cdr i
         (if (subitem)
             (cond ((null? keys) (set-cdr! (item-tree subitem) key2))
                   ((not (is-tree? (item-tree subitem)))
