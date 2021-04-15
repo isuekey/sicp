@@ -231,12 +231,13 @@ tree:find-record: (key, tree) => (node-record (find-node key tree))
 (mmi 'a 'b)
 (mmi 'a 'b 'c)
 mmt
+#|
 ;; 有很多细节有问题，
 ;; 但是已经很好了
 ;; 又花了2小时
 ;; 回顾一下问题，
 ;; 没有约定好返回值类型 导致书写时乱了
-
-
+;;
 
   
+|#
