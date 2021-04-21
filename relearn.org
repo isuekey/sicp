@@ -275,5 +275,8 @@ d(uv)/dx = u(dv/dx)+v(du/dx)
 ***** (set-signal! <wire> <new value>)
 ***** (add-action! <wire> <procedure of no arguments>)
 ***** (after-delay)
-**** 路线的表示
-***** 
+**** 路线的表示 make-wire
+**** 待处理表 after-delay
+***** 我们要学习的是教材分析需求的过程，
+***** 如何寻找看待问题的角度。
+***** 数字电路的模拟最终落到了线路上。元器件代表的是各种过程
