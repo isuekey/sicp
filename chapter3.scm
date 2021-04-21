@@ -388,7 +388,7 @@ z2
                    (lambda ()
                      (set-signal! output new-value)))))
   (add-action! a1 and-action-procedure)
-  (and-action! a2 and-action-procedure)
+  (add-action! a2 and-action-procedure)
   'ok)
 
 
@@ -424,6 +424,53 @@ z2
 (define (add-action! wire action-procedure)
   ((wire 'add-action!) action-procedure))
 
+#|
+(make-agenda)
+(empty-agenda? <agenda>)
+(first-agenda-item <agenda>)
+(remove-first-agenda-item <agenda>)
+(add-to-agenda! <time> <action> <agenda>)
+(current-time <agenda>)
+|#
+
+(define (after-delay delay action)
+  (add-to-agenda! (+ delay (current-time the-agenda))
+                  action
+                  the-agenda))
+(define (propagate)
+  (if (empty-agenda? the-agenda)
+      'done
+      (let ((first-item (first-agenda-item the-agenda)))
+        (first-item)
+        (remove-first-agenda-item! the-agenda)
+        (propagate))))
+
+(define (probe name wire)
+  (add-action! wire
+               (lambda ()
+                 (newline)
+                 (display name)
+                 (display " ")
+                 (display (current-time the-agenda))
+                 (display " New-value = ")
+                 (display (get-signal wire)))))
+(define the-agenda (make-agenda))
+(define inverter-delay 2)
+(define and-gate-delay 5)
+(define or-gate-delay 5)
+(define input-1 (make-wire))
+(define input-2 (make-wire))
+(define sum (make-wire))
+(define carry (make-wire))
+(probe 'sum sum)
+(probe 'carry carry)
+(half-adder input-1 input-2 sum carry)
+(set-signal! input-1 1)
+(propagate)
+(set-signal! input-2 1)
+(propagate)
+
+
 (define (make-time-segment time queue)
   (cons time queue))
 (define (segment-time s) (car s))
@@ -439,7 +486,7 @@ z2
 (define (rest-segment agenda) (cdr (segments agenda)))
 (define (empty-agenda? agenda) (null? (segments agenda)))
 
-;; 没看明白教材在说啥
+;; 没看明白教材在说啥。经过了翻译后很多特指的名词被覆盖了
 (define (add-to-agenda! time action agenda)
   (define (belongs-before? segments)
     (or (null? segments)
