@@ -454,6 +454,7 @@ z2
                  (display (current-time the-agenda))
                  (display " New-value = ")
                  (display (get-signal wire)))))
+
 (define the-agenda (make-agenda))
 (define inverter-delay 2)
 (define and-gate-delay 5)
@@ -527,4 +528,37 @@ z2
         (fornt-queue (segment-queue first-seg)))))
 ;; 还是没看明白教材在说啥
 
-        
+
+;; 约束系统
+
+(define C (make-connector))
+(define F (make-connector))
+(celsius-fahrenheit-converter C F)
+
+(define (celsius-fahrenheit-converter cf)
+  (let ((u (make-connector))
+        (v (make-connector))
+        (w (make-connector))
+        (x (make-connector))
+        (y (make-connector)))
+    (multiplier c w u)
+    (multiplier v x u)
+    (adder v y f)
+    (constant 9 w)
+    (constant 5 x)
+    (constant 32 y)
+    'ok))
+(define (probe name wire)
+  (add-action! wire
+               (lambda ()
+                 (newline)
+                 (display name)
+                 (display " ")
+                 (display (current-time the-agenda))
+                 (display " New-value = ")
+                 (display (get-signal wire)))))
+
+(probe "Celsius temp" C)
+(probe "Fahrenheit temp" F)
+
+(set-value! C 25 'user)
